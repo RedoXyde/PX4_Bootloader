@@ -107,6 +107,7 @@
 # define APP_LOAD_ADDRESS               0x08004000
 # define BOOTLOADER_DELAY               5000
 # define BOARD_SPARKY2
+# define INTERFACE_USART                0
 # define INTERFACE_USB                  1
 # define USBDEVICESTRING                "PX4 BL Sparky2"
 # define USBPRODUCTID                   0x0010
