@@ -110,7 +110,7 @@
 # define INTERFACE_USART                0
 # define INTERFACE_USB                  1
 # define USBDEVICESTRING                "PX4 BL Sparky2"
-# define USBPRODUCTID                   0x0010
+# define USBPRODUCTID                   0x00b3
 # define BOOT_DELAY_ADDRESS             0x000001a0
 
 # define BOARD_TYPE                     97
