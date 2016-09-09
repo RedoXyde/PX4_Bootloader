@@ -35,12 +35,11 @@ export COMMON_SRCS	 = bl.c cdcacm.c  usart.c
 #
 # Bootloaders to build
 #
-TARGETS			 = px4fmu_bl px4fmuv2_bl px4fmuv4_bl mindpxv2_bl px4flow_bl px4discovery_bl px4aerocore_bl px4io_bl px4mavstation_bl tapv1_bl crazyflie_bl
+TARGETS			 = px4fmu_bl px4fmuv2_bl px4fmuv4_bl mindpxv2_bl px4flow_bl px4discovery_bl px4aerocore_bl px4io_bl px4mavstation_bl tapv1_bl crazyflie_bl sparky2_bl
 
 # px4io_bl px4flow_bl
 
 all:	$(TARGETS)
-
 
 clean:
 	cd libopencm3 && make --no-print-directory clean & cd ..
@@ -86,6 +85,9 @@ px4mavstation_bl: $(MAKEFILE_LIST) $(LIBOPENCM3)
 
 tapv1_bl: $(MAKEFILE_LIST) $(LIBOPENCM3)
 	make -f Makefile.f4 TARGET_HW=TAP_V1 LINKER_FILE=stm32f4.ld TARGET_FILE_NAME=$@
+
+sparky2_bl: $(MAKEFILE_LIST) $(LIBOPENCM3)
+	make -f Makefile.f4 TARGET_HW=PX4_SPARKY2 LINKER_FILE=stm32f4.ld TARGET_FILE_NAME=$@
 
 #
 # Binary management

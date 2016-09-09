@@ -42,6 +42,10 @@
 #include <libopencm3/usb/usbd.h>
 #include <libopencm3/usb/cdc.h>
 
+#ifdef TARGET_HW_PX4_SPARKY2
+#include <libopencm3/stm32/otg_fs.h>
+#endif
+
 #include "bl.h"
 
 #define USB_CDC_REQ_GET_LINE_CODING			0x21 // Not defined in libopencm3
@@ -282,7 +286,6 @@ void
 usb_cinit(void)
 {
 #if defined(STM32F4)
-
 	rcc_peripheral_enable_clock(&RCC_AHB1ENR, RCC_AHB1ENR_IOPAEN);
 	rcc_peripheral_enable_clock(&RCC_AHB2ENR, RCC_AHB2ENR_OTGFSEN);
 
@@ -303,6 +306,9 @@ usb_cinit(void)
 
 	gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO9 | GPIO11 | GPIO12);
 	gpio_set_af(GPIOA, GPIO_AF10, GPIO9 | GPIO11 | GPIO12);
+  #ifdef TARGET_HW_PX4_SPARKY2
+  OTG_FS_GCCFG |= (1 << 21);
+  #endif
 
 #if defined(BOARD_USB_VBUS_SENSE_DISABLED)
 	OTG_FS_GCCFG |= OTG_FS_GCCFG_NOVBUSSENS;
@@ -310,7 +316,6 @@ usb_cinit(void)
 
 	usbd_dev = usbd_init(&otgfs_usb_driver, &dev, &config, usb_strings, NUM_USB_STRINGS,
 			     usbd_control_buffer, sizeof(usbd_control_buffer));
-
 #elif defined(STM32F1)
 	rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_IOPAEN);
 	gpio_set(GPIOA, GPIO8);

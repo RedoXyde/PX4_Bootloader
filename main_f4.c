@@ -342,10 +342,16 @@ board_init(void)
 	BOARD_POWER_ON(BOARD_POWER_PORT, BOARD_POWER_PIN_OUT);
 #endif
 
-#if INTERFACE_USB
-	/* enable GPIO9 with a pulldown to sniff VBUS */
+#ifdef INTERFACE_USB
+  #ifdef TARGET_HW_PX4_SPARKY2
+  /* enable GPIO8 with a pulldown to sniff VBUS */
+	rcc_peripheral_enable_clock(&RCC_AHB1ENR, RCC_AHB1ENR_IOPAEN);
+	gpio_mode_setup(GPIOA, GPIO_MODE_INPUT, GPIO_PUPD_PULLDOWN, GPIO8);
+  #else
+  /* enable GPIO9 with a pulldown to sniff VBUS */
 	rcc_peripheral_enable_clock(&RCC_AHB1ENR, RCC_AHB1ENR_IOPAEN);
 	gpio_mode_setup(GPIOA, GPIO_MODE_INPUT, GPIO_PUPD_PULLDOWN, GPIO9);
+  #endif
 #endif
 
 #if INTERFACE_USART
@@ -709,7 +715,6 @@ main(void)
 
 	/* configure the clock for bootloader activity */
 	clock_init();
-
 	/*
 	 * Check the force-bootloader register; if we find the signature there, don't
 	 * try booting.
@@ -780,8 +785,11 @@ main(void)
 #if defined(BOARD_USB_VBUS_SENSE_DISABLED)
 	try_boot = false;
 #else
+  #ifdef TARGET_HW_PX4_SPARKY2
+	if (gpio_get(GPIOA, GPIO8) != 0) {
+  #else
 	if (gpio_get(GPIOA, GPIO9) != 0) {
-
+  #endif
 		/* don't try booting before we set up the bootloader */
 		try_boot = false;
 	}
